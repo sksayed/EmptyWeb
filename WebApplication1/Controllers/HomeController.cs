@@ -21,9 +21,11 @@ namespace WebApplication1.Controllers
             return Json(new { id = 1, name = "sayed" });
         }
 
-        public JsonResult Get(int id )
+        public ViewResult Get(int id )
         {
-            return Json(this.employeeRepository.GetEmployee(id));
+            var emp = this.employeeRepository.GetEmployee(2);
+            return View(emp);
+
         }
     }
 }
