@@ -17,7 +17,7 @@ namespace WebApplication1
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -26,31 +26,24 @@ namespace WebApplication1
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                DeveloperExceptionPageOptions developerExceptionPage = new DeveloperExceptionPageOptions()
+                {
+                    SourceCodeLineCount = 15
+                };
+                app.UseDeveloperExceptionPage(developerExceptionPage);
             }
 
-            app.Use(async (context, next) =>
-            {
-                logger.LogInformation("Middleware 1 : an incoming request is recieved ");
-                await next();
-                logger.LogInformation("Middleware 1: middleware 1 is ending here ");
-            }
-            );
-
-            app.Use(async (context, next) =>
-            {
-                logger.LogInformation("Middleware 2 : an incoming request is recieved ");
-                await next();
-                logger.LogInformation("Middleware 2: middleware 2 is ending here ");
-            }
-          );
-
+            app.UseStaticFiles();
+            app.UseMvcWithDefaultRoute();
+          
 
             app.Run(async (context) =>
             {
+              
                 Process process = Process.GetCurrentProcess();
                 var str = " this is inside run method which is a terminal middleware and the process name is :";
-                await context.Response.WriteAsync(str+process.ProcessName);
+                var str2 = " the name of the environment is :" + env.EnvironmentName;
+                await context.Response.WriteAsync(str2+str+process.ProcessName);
             });
         }
     }
